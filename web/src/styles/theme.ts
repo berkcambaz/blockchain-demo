@@ -1,9 +1,13 @@
 import { MantineTheme, MantineThemeOverride } from "@mantine/core";
 
 export const theme: MantineThemeOverride = {
-  globalStyles: (_theme: MantineTheme) => ({
+  globalStyles: (theme: MantineTheme) => ({
     body: {
       overflowY: "scroll",
+      overscrollBehavior: "contain",
+
+      maxWidth: theme.breakpoints.lg,
+      margin: "0 auto",
     },
   }),
 
