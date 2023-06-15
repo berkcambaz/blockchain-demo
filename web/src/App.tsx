@@ -2,6 +2,8 @@ import { MantineProvider } from "@mantine/core";
 import { Outlet, ScrollRestoration } from "react-router-dom"
 import { theme } from "./styles/theme";
 
+import "@core/index"
+
 export default function App() {
   return (
     <>
