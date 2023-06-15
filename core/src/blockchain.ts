@@ -11,7 +11,7 @@ export interface IBlockchain {
 
 function create(difficulty: number, miningReward: number) {
   // Create the first block, "Genesis Block"
-  const genesis = block.create(Date.now(), []);
+  const genesis = block.create(Date.now(), [], "");
   genesis.hash = block.calculateHash(genesis);
 
   const blockchain: IBlockchain = {
@@ -25,12 +25,20 @@ function create(difficulty: number, miningReward: number) {
   return blockchain;
 }
 
-function createTransaction(_blockchain: IBlockchain, transaction: ITransaction) {
-  _blockchain.pendingTransactions.push(transaction);
+function addTransaction(_blockchain: IBlockchain, _transaction: ITransaction) {
+  if (!_transaction.fromAddress || !_transaction.toAddress) {
+    throw "Transactions must have a from and a to address!";
+  }
+
+  if (!transaction.checkValidity(_transaction)) {
+    throw "Cannot add invalid transactions to the chain!";
+  }
+
+  _blockchain.pendingTransactions.push(_transaction);
 }
 
 async function minePendingTransactions(_blockchain: IBlockchain, miningRewardAddress: string) {
-  let _block = block.create(Date.now(), _blockchain.pendingTransactions);
+  let _block = block.create(Date.now(), _blockchain.pendingTransactions, getPreviousBlock(_blockchain).hash);
   await block.mine(_block, _blockchain.difficulty);
 
   _blockchain.chain.push(_block);
@@ -39,13 +47,11 @@ async function minePendingTransactions(_blockchain: IBlockchain, miningRewardAdd
   ];
 }
 
-async function addBlock(_blockchain: IBlockchain, _block: IBlock) {
-  const previousBlock = _blockchain.chain[_blockchain.chain.length - 1];
-  if (!previousBlock) throw "Previous block doesn't exist!";
+function getPreviousBlock(_blockchain: IBlockchain): IBlock {
+  const block = _blockchain.chain[_blockchain.chain.length - 1];
+  if (!block) throw "Previous block doesn't exist!";
 
-  _block.previousHash = previousBlock.hash;
-  await block.mine(_block, _blockchain.difficulty);
-  _blockchain.chain.push(_block);
+  return block;
 }
 
 function getAddressBalance(_blockchain: IBlockchain, address: string): Promise<number> {
@@ -75,6 +81,8 @@ function checkValidity(_blockchain: IBlockchain) {
     // If any one of the block is undefined
     if (!currentBlock || !previousBlock) return false;
 
+    if (!block.checkValidity(currentBlock)) return false;
+
     // If current block's contents are tampered
     if (currentBlock.hash !== block.calculateHash(currentBlock)) return false;
 
@@ -87,11 +95,11 @@ function checkValidity(_blockchain: IBlockchain) {
 
 export const blockchain = {
   create,
-  addBlock,
 
-  createTransaction,
+  addTransaction,
   minePendingTransactions,
 
+  getPreviousBlock,
   getAddressBalance,
   checkValidity,
 }
