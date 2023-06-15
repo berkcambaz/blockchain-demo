@@ -5,16 +5,23 @@ import { wallet } from "./wallet";
 async function main() {
   const dorbyte = blockchain.create(2, 100);
 
+  const minerWallet = wallet.create();
   const wallet1 = wallet.create();
   const wallet2 = wallet.create();
 
-  const tx1 = transaction.create(wallet1.public, wallet2.public, 100);
-  transaction.sign(tx1, wallet1.private);
-  blockchain.addTransaction(dorbyte, tx1);
+  await blockchain.minePendingTransactions(dorbyte, minerWallet.public);
+  console.log(await blockchain.getAddressBalance(dorbyte, minerWallet.public));
 
-  await blockchain.minePendingTransactions(dorbyte, "miner-address");
+  const tx1 = transaction.create(minerWallet.public, wallet1.public, 25);
+  transaction.sign(tx1, minerWallet.private);
+  await blockchain.addTransaction(dorbyte, tx1);
 
-  console.log(await blockchain.getAddressBalance(dorbyte, wallet2.public))
+  const tx2 = transaction.create(minerWallet.public, wallet2.public, 25);
+  transaction.sign(tx2, minerWallet.private);
+  await blockchain.addTransaction(dorbyte, tx2);
+
+  await blockchain.minePendingTransactions(dorbyte, minerWallet.public);
+  console.log(await blockchain.getAddressBalance(dorbyte, minerWallet.public));
 
   console.log(JSON.stringify(dorbyte, null, 4));
 }

@@ -1,4 +1,5 @@
 import sha256 from "crypto-js/sha256";
+import { IBlockchain } from "./blockchain";
 import { ITransaction, transaction } from "./transaction";
 
 export interface IBlock {
@@ -20,14 +21,21 @@ function create(timestamp: number, transactions: ITransaction[], previousHash: s
     previousHash,
 
     nonce: 0,
-  }
+  };
+
+  block.hash = calculateHash(block);
 
   return block;
 }
 
-function mine(_block: IBlock, difficulty: number): Promise<void> {
+function mine(_blockchain: IBlockchain, _block: IBlock): Promise<void> {
+  const difficulty = _blockchain.difficulty;
+  const zeros = Array(difficulty + 1).join("0");
+
   return new Promise((resolve, _reject) => {
-    while (_block.hash.substring(0, difficulty) !== Array(difficulty + 1).join("0")) {
+    while (_block.hash.substring(0, difficulty) !== zeros) {
+      // When a block is created, it's hash is calculated by default,
+      // so, increase the nonce & only then re-calculate the hash
       _block.nonce++;
       _block.hash = calculateHash(_block);
     }
@@ -45,7 +53,12 @@ function checkValidity(block: IBlock) {
 }
 
 function calculateHash(block: IBlock): string {
-  return sha256(block.timestamp + JSON.stringify(block.transactions) + block.previousHash + block.nonce).toString();
+  return sha256(
+    block.timestamp +
+    JSON.stringify(block.transactions) +
+    block.previousHash +
+    block.nonce
+  ).toString();
 }
 
 export const block = {
