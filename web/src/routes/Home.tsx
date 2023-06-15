@@ -1,36 +1,101 @@
-import { wrapContent } from "@/styles/css";
-import { Card, Flex, Text, Title } from "@mantine/core";
+import { useCryptoStore } from "@/stores/cryptoStore";
+import { IBlock } from "@core/block";
+import { ITransaction } from "@core/transaction";
+import { ActionIcon, Anchor, Card, createStyles, Flex, Image, px, Text, Title } from "@mantine/core";
+import { IconWallet, IconCe, IconMobiledata, IconCubeSend, Icon3dCubeSphere } from "@tabler/icons-react";
+
+const useStyles = createStyles((theme) => ({
+  header: {
+    position: "fixed",
+    top: 0,
+    margin: theme.spacing.md,
+    zIndex: 100,
+    width: `calc(100% - ${px(theme.spacing.md) * 2}px)`,
+    maxWidth: theme.breakpoints.sm,
+    height: 64,
+  },
+
+  main: {
+    marginTop: px(theme.spacing.md) + 64,
+    marginBottom: px(theme.spacing.md) + 64,
+  },
+
+  footer: {
+    position: "fixed",
+    bottom: 0,
+    margin: theme.spacing.md,
+    zIndex: 100,
+    width: `calc(100% - ${px(theme.spacing.md) * 2}px)`,
+    maxWidth: theme.breakpoints.sm,
+    height: 64,
+  },
+}));
 
 export default function Home() {
+  const { classes } = useStyles();
+  const blockchain = useCryptoStore(state => state.blockchain);
+
   return (
-    <Flex direction="column" align="center" gap="md" p="md">
-      <Card>
-        <Title order={4}>Test wallet 1</Title>
+    <Flex direction="column" gap="md">
 
-        <Text sx={wrapContent}>
-          Public key: <br />
-          046fd9b5b1492f5708bd6ed77641940e29df0a432fa63b6af546fec3055394af36b8b84b056c3f0bd52b48142523ffabf988716a723dc9d78f1fecd9fe96d769f5
-        </Text>
-
-        <Text sx={wrapContent}>
-          Private key: <br />
-          a9679280ee798da282d58b316400b03ad650727f770a0921a7f0fdac2809a5fe
-        </Text>
+      <Card withBorder className={classes.header}>
+        <Flex direction="row" justify="center" gap="xs">
+          <Image src="/favicon.svg" width={36} height={36} />
+          <Title order={2}>DorByte Chain</Title>
+        </Flex>
       </Card>
 
-      <Card>
-        <Title order={4}>Test wallet 2</Title>
+      <Flex direction="column" gap="md" p="md" className={classes.main}>
+        {blockchain.chain.map((block, i) => <Block block={block} index={i} key={block.hash} />)}
+      </Flex>
 
-        <Text sx={wrapContent}>
-          Public key: <br />
-          04dc130e7f99b39c605d031ba20a5f6a6c426315591bd1f73a197c01ad24f33ea27e7f6ae3001023fc89a257b2ca9d5b768b24b87fa3d5f9f9cac1d476eaed0450
-        </Text>
+      <Card withBorder className={classes.footer}>
+        <Flex direction="row" align="center" justify="center" gap="md">
 
-        <Text sx={wrapContent}>
-          Private key: <br />
-          24d94ddd3fc2dd0f7279d1dba8c4e0f6def17bfa7bccc25d87e3ac1c30bdfffd
-        </Text>
+          <ActionIcon size={32}>
+            <Icon3dCubeSphere size={32} />
+          </ActionIcon>
+
+          <ActionIcon size={32}>
+            <IconMobiledata size={32} />
+          </ActionIcon>
+
+          <ActionIcon size={32}>
+            <IconWallet size={32} />
+          </ActionIcon>
+
+        </Flex>
       </Card>
+
     </Flex>
+  )
+}
+
+function Block({ block, index }: { block: IBlock, index: number }) {
+  return (
+    <Card withBorder>
+      <Flex direction="column" gap="xs">
+
+        <Title order={3}>{`Block ${index}`}</Title>
+
+        <Text truncate>{`Timestamp: ${block.timestamp}`}</Text>
+
+        <Text truncate>Transactions: <Anchor >See Transactions...</Anchor></Text>
+
+        <Flex direction="column">
+          <Text truncate>{`Previous Hash: ${block.previousHash}`}</Text>
+          <Text truncate>{`Hash: ${block.hash}`}</Text>
+        </Flex>
+
+        <Text truncate>{`Nonce: ${block.nonce}`}</Text>
+
+      </Flex>
+    </Card>
+  )
+}
+
+function Transaction({ transaction }: { transaction: ITransaction }) {
+  return (
+    <></>
   )
 }
