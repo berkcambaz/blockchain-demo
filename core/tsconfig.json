@@ -14,6 +14,8 @@
     "outDir": "./dist",
     "removeComments": true,
     "skipLibCheck": true,
+
+    "lib": ["ES2015","DOM"]
   },
   "include": [
     "./src/**/*"

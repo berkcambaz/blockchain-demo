@@ -2,26 +2,28 @@ import { block, IBlock } from "./block"
 
 export interface IBlockchain {
   chain: IBlock[];
+  difficulty: number;
 }
 
-function create() {
+function create(difficulty: number) {
   // Create the first block, "Genesis Block"
   const genesis = block.create(Date.now(), "Genesis Block");
   genesis.hash = block.calculateHash(genesis);
 
   const blockchain: IBlockchain = {
     chain: [genesis],
+    difficulty,
   }
 
   return blockchain;
 }
 
-function addBlock(_blockchain: IBlockchain, _block: IBlock) {
+async function addBlock(_blockchain: IBlockchain, _block: IBlock) {
   const previousBlock = _blockchain.chain[_blockchain.chain.length - 1];
   if (!previousBlock) throw "Previous block doesn't exist!";
 
   _block.previousHash = previousBlock.hash;
-  _block.hash = block.calculateHash(_block);
+  await block.mine(_block, _blockchain.difficulty);
   _blockchain.chain.push(_block);
 }
 
