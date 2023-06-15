@@ -1,8 +1,9 @@
 import sha256 from "crypto-js/sha256";
+import { ITransaction } from "./transaction";
 
 export interface IBlock {
   timestamp: number;
-  data: any;
+  transactions: ITransaction[];
 
   hash: string;
   previousHash: string;
@@ -10,10 +11,10 @@ export interface IBlock {
   nonce: number;
 }
 
-function create(timestamp: number, data: any) {
+function create(timestamp: number, transactions: ITransaction[]) {
   const block: IBlock = {
     timestamp,
-    data,
+    transactions,
 
     hash: "",
     previousHash: "",
@@ -36,7 +37,7 @@ function mine(_block: IBlock, difficulty: number): Promise<void> {
 }
 
 function calculateHash(block: IBlock): string {
-  return sha256(block.timestamp + JSON.stringify(block.data) + block.previousHash + block.nonce).toString();
+  return sha256(block.timestamp + JSON.stringify(block.transactions) + block.previousHash + block.nonce).toString();
 }
 
 export const block = {
