@@ -1,9 +1,11 @@
-import { Flex } from "@mantine/core";
+import { useParams } from "react-router-dom";
 
-export default function NotFound() {
+export default function WalletRoute() {
+  const params = useParams<{ id: string }>();
+
   return (
-    <Flex direction="column">
-      404
-    </Flex>
+    <>
+      wallet
+    </>
   )
 }

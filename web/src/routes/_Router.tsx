@@ -25,8 +25,12 @@ export const router = createHashRouter(
 
       <Route element={<Suspense fallback={<CenterLoader />}><DefaultLayout /></Suspense>}>
         <Route path="/blockchain" element={Blockchain} />
+
         <Route path="/transactions" element={Transactions} />
+        <Route path="/transactions/:id" element={Transactions} />
+
         <Route path="/wallets" element={Wallets} />
+        <Route path="/wallets/:id" element={Wallets} />
 
         {/* Error routes & catch all */}
         <Route path="/404" element={NotFound} />

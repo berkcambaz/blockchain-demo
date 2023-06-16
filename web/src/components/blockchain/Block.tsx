@@ -1,7 +1,10 @@
 import { IBlock } from "@core/block";
 import { Anchor, Card, Flex, Text, Title } from "@mantine/core";
+import { useNavigate } from "react-router-dom";
 
 export default function Block({ block, index }: { block: IBlock, index: number }) {
+  const navigate = useNavigate();
+
   return (
     <Card withBorder>
       <Flex direction="column" gap="xs">
@@ -10,7 +13,10 @@ export default function Block({ block, index }: { block: IBlock, index: number }
 
         <Text truncate>{`Timestamp: ${block.timestamp}`}</Text>
 
-        <Text truncate>Transactions: <Anchor >See Transactions...</Anchor></Text>
+        <Text truncate>
+          {`Transactions: ${block.transactions.length} `}
+          <Anchor onClick={() => navigate(`/transactions/${index}`)}>See Transactions...</Anchor>
+        </Text>
 
         <Flex direction="column">
           <Text truncate>{`Previous Hash: ${block.previousHash}`}</Text>
