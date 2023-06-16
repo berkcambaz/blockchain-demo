@@ -1,6 +1,11 @@
 import { ec } from "./util/ec"
 
-function create() {
+export interface IWallet {
+  public: string;
+  private: string;
+}
+
+function create(): IWallet {
   const keyPair = ec.genKeyPair();
 
   return {

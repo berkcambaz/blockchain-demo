@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useLocalStorage } from "@mantine/hooks";
 
 export function useWait<T>(
   start: () => Promise<T>,
@@ -39,23 +38,4 @@ export function useDelay() {
   }, []);
 
   return state;
-}
-
-export function useSettings() {
-  const [blockchain, setBlockchain] = useLocalStorage({
-    key: "blockchain",
-    defaultValue: {},
-    getInitialValueInEffect: false,
-  });
-
-  const [wallets, setWallets] = useLocalStorage({
-    key: "wallets",
-    defaultValue: {},
-    getInitialValueInEffect: false,
-  });
-
-  return {
-    blockchain, setBlockchain,
-    wallets, setWallets,
-  }
 }

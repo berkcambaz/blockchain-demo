@@ -21,7 +21,7 @@ function create(difficulty: number, miningReward: number) {
   return blockchain;
 }
 
-async function addTransaction(_blockchain: IBlockchain, _transaction: ITransaction) {
+function addTransaction(_blockchain: IBlockchain, _transaction: ITransaction) {
   if (!_transaction.fromAddress || !_transaction.toAddress) {
     throw "Transactions must have a from address and a to address!";
   }
@@ -35,7 +35,7 @@ async function addTransaction(_blockchain: IBlockchain, _transaction: ITransacti
   }
 
   // Make sure sender's balance is more or equal to the transactin amount
-  const walletBalance = await getAddressBalance(_blockchain, _transaction.fromAddress);
+  const walletBalance = getAddressBalance(_blockchain, _transaction.fromAddress);
   if (walletBalance < _transaction.amount) {
     throw "The sender does not have enough balance!";
   }
@@ -81,22 +81,20 @@ function getLatestBlock(_blockchain: IBlockchain): IBlock {
   return block;
 }
 
-function getAddressBalance(_blockchain: IBlockchain, address: string): Promise<number> {
-  return new Promise((resolve, _reject) => {
-    let balance = 0;
+function getAddressBalance(_blockchain: IBlockchain, address: string): number {
+  let balance = 0;
 
-    for (const block of _blockchain.chain) {
-      for (const transaction of block.transactions) {
-        // If address is from address, the address has sent coins
-        if (transaction.fromAddress === address) balance -= transaction.amount;
+  for (const block of _blockchain.chain) {
+    for (const transaction of block.transactions) {
+      // If address is from address, the address has sent coins
+      if (transaction.fromAddress === address) balance -= transaction.amount;
 
-        // If address is to address, the address has received coins
-        if (transaction.toAddress === address) balance += transaction.amount;
-      }
+      // If address is to address, the address has received coins
+      if (transaction.toAddress === address) balance += transaction.amount;
     }
+  }
 
-    resolve(balance);
-  });
+  return balance;
 }
 
 function checkValidity(_blockchain: IBlockchain): boolean {
