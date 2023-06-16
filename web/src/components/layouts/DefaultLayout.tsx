@@ -62,7 +62,7 @@ export default function DefaultLayout() {
           </ActionIcon>
 
           <Flex direction="row" justify="center" gap="md">
-            <Image src="/favicon.svg" width={36} height={36} />
+            <Image src="./favicon.svg" width={36} height={36} />
             <Title order={2}>DorByte Chain</Title>
           </Flex>
 
