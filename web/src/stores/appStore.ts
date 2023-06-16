@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
 export interface AppStoreState {
-  route: "blockchain" | "transactions" | "wallets" | "any";
+  route: "blockchain" | "transactions" | "wallets" | "settings" | "any";
 }
 
 export interface AppStoreAction {

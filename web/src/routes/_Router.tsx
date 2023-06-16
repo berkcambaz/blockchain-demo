@@ -9,12 +9,14 @@ import DefaultLayout from "@/components/layouts/DefaultLayout";
 const LazyBlockchain = React.lazy(useWait(() => import("./Blockchain")));
 const LazyTransactions = React.lazy(useWait(() => import("./Transactions")));
 const LazyWallets = React.lazy(useWait(() => import("./Wallets")));
+const LazySettings = React.lazy(useWait(() => import("./Settings")));
 const LazyNotFound = React.lazy(useWait(() => import("./NotFound")));
 // Lazy routes \\
 
 const Blockchain = <Suspense fallback={<CenterLoader />}><LazyBlockchain /></Suspense>
 const Transactions = <Suspense fallback={<CenterLoader />}><LazyTransactions /></Suspense>
 const Wallets = <Suspense fallback={<CenterLoader />}><LazyWallets /></Suspense>
+const Settings = <Suspense fallback={<CenterLoader />}><LazySettings /></Suspense>
 const NotFound = <Suspense fallback={<CenterLoader />}><LazyNotFound /></Suspense>
 
 export const router = createHashRouter(
@@ -31,6 +33,8 @@ export const router = createHashRouter(
 
         <Route path="/wallets" element={Wallets} />
         <Route path="/wallets/:id" element={Wallets} />
+
+        <Route path="/settings" element={Settings} />
 
         {/* Error routes & catch all */}
         <Route path="/404" element={NotFound} />

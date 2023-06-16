@@ -5,6 +5,7 @@ import { wallet } from "@core/wallet";
 
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
+import { persist } from "zustand/middleware";
 
 const _blockchain: IBlockchain = blockchain.create(2, 100);
 
@@ -35,7 +36,7 @@ export interface CryptoStoreState {
 }
 
 export interface CryptoStoreAction {
-
+  reset: () => void;
 }
 
 const initialState: CryptoStoreState = {
@@ -44,7 +45,18 @@ const initialState: CryptoStoreState = {
 };
 
 export const useCryptoStore = create(
-  immer<CryptoStoreState & CryptoStoreAction>((_set, _get) => ({
-    ...initialState,
-  }))
+  immer(
+    persist<CryptoStoreState & CryptoStoreAction>(
+      (set, _get) => ({
+        ...initialState,
+
+        reset: () => {
+          set(initialState);
+        }
+      }),
+      {
+        name: "crypto"
+      }
+    )
+  )
 );

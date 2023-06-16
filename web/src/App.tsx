@@ -11,6 +11,7 @@ export default function App() {
     if (location.pathname.indexOf("/blockchain") !== -1) useAppStore.setState(s => { s.route = "blockchain" });
     else if (location.pathname.indexOf("/transactions") !== -1) useAppStore.setState(s => { s.route = "transactions" });
     else if (location.pathname.indexOf("/wallets") !== -1) useAppStore.setState(s => { s.route = "wallets" });
+    else if (location.pathname.indexOf("/settings") !== -1) useAppStore.setState(s => { s.route = "settings" });
     else useAppStore.setState(s => { s.route = "any" });
   }, [location.pathname]);
 

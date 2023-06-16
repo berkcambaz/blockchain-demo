@@ -1,6 +1,6 @@
 import { useAppStore } from "@/stores/appStore";
 import { ActionIcon, Card, createStyles, Flex, Image, px, Title } from "@mantine/core";
-import { Icon3dCubeSphere, IconArrowLeft, IconMobiledata, IconWallet } from "@tabler/icons-react";
+import { Icon3dCubeSphere, IconArrowLeft, IconMobiledata, IconSettings, IconWallet } from "@tabler/icons-react";
 import { Outlet, useNavigate } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
@@ -102,6 +102,14 @@ export default function DefaultLayout() {
             size={32}
           >
             <IconWallet size={32} />
+          </ActionIcon>
+
+          <ActionIcon
+            color={route === "settings" ? "green" : undefined}
+            onClick={() => navigate("/settings")}
+            size={32}
+          >
+            <IconSettings size={32} />
           </ActionIcon>
 
         </Flex>
