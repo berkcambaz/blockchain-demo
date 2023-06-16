@@ -1,7 +1,6 @@
 import Wallet from "@/components/blockchain/Wallet";
 import { IAppWallet } from "@/components/types/wallet";
 import { useCryptoStore } from "@/stores/cryptoStore";
-import { blockchain } from "@core/blockchain";
 import { wallet } from "@core/wallet";
 import { Button, Card, Flex, TextInput } from "@mantine/core";
 import { useState } from "react";
@@ -10,9 +9,7 @@ import { useParams } from "react-router-dom";
 export default function WalletRoute() {
   const params = useParams<{ id: string }>();
 
-  const _blockchain = useCryptoStore(state => state.blockchain);
   const _wallets = useCryptoStore(state => state.wallets);
-
   const [walletName, setWalletName] = useState("");
 
   const createWallet = () => {
@@ -41,9 +38,7 @@ export default function WalletRoute() {
             </Flex>
           </Card>
 
-          {_wallets.map((w) =>
-            <Wallet wallet={w} balance={blockchain.getAddressBalance(_blockchain, w.keys.public)} key={w.keys.public} />
-          )}
+          {_wallets.map((w) => <Wallet wallet={w} key={w.keys.public} />)}
         </>
       }
 

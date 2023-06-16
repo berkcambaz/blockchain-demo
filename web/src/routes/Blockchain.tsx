@@ -14,12 +14,9 @@ export default function BlockchainRoute() {
 
   const [minerAddress, setMinerAddress] = useState<string | null>("");
 
-  const mine = () => {
+  const mine = async () => {
     if (!minerAddress) return;
-
-    useCryptoStore.setState(async (s) => {
-      await blockchain.minePendingTransactions(s.blockchain, minerAddress);
-    });
+    useCryptoStore.setState((s) => { blockchain.minePendingTransactions(s.blockchain, minerAddress) });
   }
 
   return (
@@ -37,7 +34,7 @@ export default function BlockchainRoute() {
           </Text>
 
           <Select
-            label="From Address"
+            label="Miner Address"
             data={_wallets.map(w => ({ label: w.name, value: w.keys.public }))}
             value={minerAddress} onChange={setMinerAddress}
             withinPortal={true}

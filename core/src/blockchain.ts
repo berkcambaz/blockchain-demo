@@ -40,34 +40,25 @@ function addTransaction(_blockchain: IBlockchain, _transaction: ITransaction) {
     throw "The sender does not have enough balance!";
   }
 
-  // Get all pending transactions of this sender
-  const walletPendingTransactions = _blockchain.pendingTransactions.filter(
-    tx => tx.fromAddress === _transaction.fromAddress
-  );
-
-  // If wallet has other pending transactions, also include that in the balance calculation
-  if (walletPendingTransactions.length > 0) {
-    const totalPendingAmount = walletPendingTransactions
-      .map(tx => tx.amount)
-      .reduce((prev, curr) => prev + curr)
-
-    const totalAmount = totalPendingAmount + _transaction.amount;
-    if (totalAmount > walletBalance) {
-      throw "The sender does not have enough balance (check pending transactions)!";
-    }
+  // Wallet might have other pending transactions, so include that in the balance calculation
+  const pendingBalance = getAddressPendingBalance(_blockchain, _transaction.fromAddress);
+  const totalAmount = pendingBalance + _transaction.amount;
+  if (totalAmount > walletBalance) {
+    throw "The sender does not have enough balance (check pending transactions)!";
   }
+
 
   _blockchain.pendingTransactions.push(_transaction);
 }
 
-async function minePendingTransactions(_blockchain: IBlockchain, minerAddress: string) {
+function minePendingTransactions(_blockchain: IBlockchain, minerAddress: string) {
   // Create & add the "mining reward" transaction, it has no sender and receiver is the miner
   let rewardTransaction = transaction.create("", minerAddress, _blockchain.miningReward);
   _blockchain.pendingTransactions.push(rewardTransaction);
 
   // Create the block containing all pending transactions and mine it
   let _block = block.create(Date.now(), _blockchain.pendingTransactions, getLatestBlock(_blockchain).hash);
-  await block.mine(_blockchain, _block);
+  block.mine(_blockchain, _block);
 
   // After the new block is mined, add it to the chain and clear "pending transactions"
   _blockchain.chain.push(_block);
@@ -95,6 +86,22 @@ function getAddressBalance(_blockchain: IBlockchain, address: string): number {
   }
 
   return balance;
+}
+
+function getAddressPendingBalance(_blockchain: IBlockchain, address: string): number {
+  // Get all pending transactions of this sender
+  const walletPendingTransactions = _blockchain.pendingTransactions.filter(
+    tx => tx.fromAddress === address
+  );
+
+  if (walletPendingTransactions.length === 0) return 0;
+
+  // Sum all pending balances
+  const pendingBalance = walletPendingTransactions
+    .map(tx => tx.amount)
+    .reduce((prev, curr) => prev + curr)
+
+  return pendingBalance;
 }
 
 function checkValidity(_blockchain: IBlockchain): boolean {
@@ -135,7 +142,10 @@ export const blockchain = {
   minePendingTransactions,
 
   getLatestBlock,
+
   getAddressBalance,
+  getAddressPendingBalance,
+
   checkValidity,
   createGenesisBlock,
 }

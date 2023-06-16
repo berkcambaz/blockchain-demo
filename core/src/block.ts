@@ -28,20 +28,16 @@ function create(timestamp: number, transactions: ITransaction[], previousHash: s
   return block;
 }
 
-function mine(_blockchain: IBlockchain, _block: IBlock): Promise<void> {
+function mine(_blockchain: IBlockchain, _block: IBlock) {
   const difficulty = _blockchain.difficulty;
   const zeros = Array(difficulty + 1).join("0");
 
-  return new Promise((resolve, _reject) => {
-    while (_block.hash.substring(0, difficulty) !== zeros) {
-      // When a block is created, it's hash is calculated by default,
-      // so, increase the nonce & only then re-calculate the hash
-      _block.nonce++;
-      _block.hash = calculateHash(_block);
-    }
-
-    resolve();
-  });
+  while (_block.hash.substring(0, difficulty) !== zeros) {
+    // When a block is created, it's hash is calculated by default,
+    // so, increase the nonce & only then re-calculate the hash
+    _block.nonce++;
+    _block.hash = calculateHash(_block);
+  }
 }
 
 function checkValidity(block: IBlock) {
