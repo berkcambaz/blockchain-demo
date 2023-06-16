@@ -4,7 +4,6 @@ import { immer } from "zustand/middleware/immer";
 
 const _blockchain = blockchain.create(2, 100);
 
-
 export interface CryptoStoreState {
   blockchain: IBlockchain;
 }
