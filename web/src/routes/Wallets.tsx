@@ -18,6 +18,8 @@ export default function WalletRoute() {
 
     const w: IAppWallet = { name, keys: wallet.create() };
     useCryptoStore.setState(s => { s.wallets.push(w) });
+
+    setWalletName("");
   }
 
   return (

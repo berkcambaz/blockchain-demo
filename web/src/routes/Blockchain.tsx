@@ -17,6 +17,8 @@ export default function BlockchainRoute() {
   const mine = async () => {
     if (!minerAddress) return;
     useCryptoStore.setState((s) => { blockchain.minePendingTransactions(s.blockchain, minerAddress) });
+
+    setMinerAddress("");
   }
 
   return (

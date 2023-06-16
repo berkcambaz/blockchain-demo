@@ -31,6 +31,10 @@ export default function TransactionsRoute() {
     const tx = transaction.create(fromAddress, toAddress, amount);
     transaction.sign(tx, wallet.keys.private);
     useCryptoStore.setState(s => { blockchain.addTransaction(s.blockchain, tx) });
+
+    setFromAddress("");
+    setToAddress("");
+    setAmount(0);
   }
 
   return (
