@@ -2,7 +2,7 @@ import Wallet from "@/components/blockchain/Wallet";
 import { IAppWallet } from "@/components/types/wallet";
 import { useCryptoStore } from "@/stores/cryptoStore";
 import { wallet } from "@core/wallet";
-import { Button, Card, Flex, TextInput } from "@mantine/core";
+import { Button, Card, Flex, Text, TextInput } from "@mantine/core";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -10,6 +10,7 @@ export default function WalletRoute() {
   const params = useParams<{ id: string }>();
 
   const _wallets = useCryptoStore(state => state.wallets);
+  const currentWallet = _wallets.filter(w => w.keys.public === params.id)[0];
   const [walletName, setWalletName] = useState("");
 
   const createWallet = () => {
@@ -44,10 +45,8 @@ export default function WalletRoute() {
         </>
       }
 
-      {params.id !== undefined &&
-        <>
-        </>
-      }
+      {params.id !== undefined && currentWallet && <Wallet wallet={currentWallet} />}
+      {params.id !== undefined && !currentWallet && <Text align="center">Wallet is not found!</Text>}
     </>
   )
 }
